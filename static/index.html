@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Instagram Lead Finder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1><i class="fa-brands fa-instagram" style="background: -webkit-linear-gradient(#f9ce34, #ee2a7b, #6228d7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i> AI Müştəri Tapan</h1>
+            <p>Müştəri tapma prosesinizi Süni İntellektlə avtomatlaşdırın.</p>
+        </header>
+
+        <section class="glass-panel search-section">
+            <div class="input-group">
+                <i class="fa-solid fa-briefcase"></i>
+                <input type="text" id="niche" placeholder="Hədəf Sahə (məs. Stomatoloq, Salon)" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <i class="fa-solid fa-location-dot"></i>
+                <input type="text" id="location" placeholder="Məkan (məs. Bakı, İstanbul)" autocomplete="off">
+            </div>
+            <div class="toggle-group" style="display: none;">
+                <label class="switch">
+                    <input type="checkbox" id="mockMode">
+                    <span class="slider round"></span>
+                </label>
+                <span>Sınaq Məlumatı (Sürətli Test)</span>
+            </div>
+            <button id="searchBtn" class="glow-on-hover"><i class="fa-solid fa-wand-magic-sparkles"></i> Müştəriləri Tap</button>
+        </section>
+
+        <div id="loading" class="hidden">
+            <div class="spinner"></div>
+            <p>Süni İntellekt axtarır və mesajları yazır...</p>
+        </div>
+
+        <section class="results-section">
+            <div class="results-header">
+                <h2>Tapılmış Müştərilər <span id="leadCount" class="badge">0</span></h2>
+                <button id="refreshBtn" class="refresh-btn"><i class="fa-solid fa-rotate-right"></i> Yenilə</button>
+            </div>
+            <div id="leadsContainer" class="leads-grid">
+                <!-- Cards injected by JS -->
+            </div>
+        </section>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

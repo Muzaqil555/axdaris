@@ -1,0 +1,36 @@
+﻿# Environment variables and secrets
+.env
+.env.local
+.env.*.local
+*.env
+
+# Python cache & bytecode
+__pycache__/
+*.py[cod]
+*.class
+*.pyc
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Data & outputs (databases and exported leads)
+data/*.db
+data/*.sqlite3
+*.db
+*.sqlite3
+output/*.csv
+output/*.xlsx
+
+# Keep folder structures
+!data/.gitkeep
+!output/.gitkeep
+
+# IDE & OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
