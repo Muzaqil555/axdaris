@@ -28,7 +28,4 @@ Süni intellekt (Gemini AI) dəstəkli Instagram müştəri tapan, analiz edən 
 3. **Tətbiqi başladın:**
    `ash
    python server.py
-   # və ya Windows-da:
-   start.bat
-   `
-   Brauzerinizdə http://localhost:8000 ünvanına daxil olun.
+
