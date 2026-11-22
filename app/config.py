@@ -7,6 +7,8 @@ load_dotenv()
 class Config:
     # API Keys
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+    # Model used for lead search and sales messages; override with GEMINI_MODEL in .env
+    GEMINI_MODEL = os.getenv("GEMINI_MODEL") or "gemini-flash-latest"
     
     # App Settings
     DB_PATH = os.path.join(os.getcwd(), "data", "leads.db")

@@ -9,7 +9,7 @@ class Scraper:
         self.api_key = Config.GEMINI_API_KEY
         if self.api_key:
             genai.configure(api_key=self.api_key)
-            self.model = genai.GenerativeModel('gemini-flash-latest')
+            self.model = genai.GenerativeModel(Config.GEMINI_MODEL)
         else:
             self.model = None
 

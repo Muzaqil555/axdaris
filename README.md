@@ -24,6 +24,10 @@ Süni intellekt (Gemini AI) dəstəkli Instagram müştəri tapan, analiz edən 
      `env
      GEMINI_API_KEY=your_gemini_api_key_here
      `
+   - İstəsəniz modeli də dəyişə bilərsiniz (standart: `gemini-flash-latest`):
+     `env
+     GEMINI_MODEL=gemini-flash-latest
+     `
 
 3. **Tətbiqi başladın:**
    `ash

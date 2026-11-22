@@ -7,8 +7,7 @@ class AIGenerator:
         self.api_key = Config.GEMINI_API_KEY
         if self.api_key:
             genai.configure(api_key=self.api_key)
-            # Try models in order of preference
-            self.model = genai.GenerativeModel('gemini-2.0-flash')
+            self.model = genai.GenerativeModel(Config.GEMINI_MODEL)
         else:
             self.model = None
 
