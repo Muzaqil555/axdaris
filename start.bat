@@ -10,5 +10,5 @@ echo  Baglamaq ucun bu pencerani baglayin.
 echo.
 timeout /t 2 /nobreak > nul
 start http://localhost:8000
-py -m uvicorn server:app --host 0.0.0.0 --port 8000
+py -m uvicorn server:app --host 127.0.0.1 --port 8000
 pause
