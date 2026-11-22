@@ -29,7 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ niche, location, use_mock: false })
             });
-            await res.json();
+            const data = await res.json();
+            if (!res.ok) {
+                // 422 from server-side validation (blank, too long, multi-line input)
+                throw new Error(JSON.stringify(data.detail || data));
+            }
 
             // Poll for results every 3 seconds
             if (pollInterval) clearInterval(pollInterval);

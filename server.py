@@ -1,6 +1,6 @@
 from fastapi import FastAPI, BackgroundTasks
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 import os
 import time
 from app.scraper import Scraper
@@ -16,10 +16,31 @@ os.makedirs("static", exist_ok=True)
 # Mount static folder
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+MAX_FIELD_LENGTH = 100
+
+
 class SearchRequest(BaseModel):
-    niche: str
-    location: str
+    niche: str = Field(..., min_length=1, max_length=MAX_FIELD_LENGTH)
+    location: str = Field(..., min_length=1, max_length=MAX_FIELD_LENGTH)
     use_mock: bool = False
+
+    @field_validator("niche", "location", mode="before")
+    @classmethod
+    def strip_and_require_text(cls, value):
+        """Trim whitespace and reject blank or control-character input.
+
+        These values are interpolated into the Gemini prompt and into mock
+        profile URLs, so empty strings, huge payloads and newlines (prompt
+        injection via extra instructions) are rejected up front.
+        """
+        if not isinstance(value, str):
+            raise ValueError("must be a string")
+        if any(ord(c) < 32 or ord(c) == 127 for c in value):
+            raise ValueError("must be a single line without control characters")
+        value = " ".join(value.split())
+        if not value:
+            raise ValueError("must not be blank")
+        return value
 
 def process_leads_task(niche: str, location: str, use_mock: bool):
     scraper = Scraper(use_mock=use_mock)
