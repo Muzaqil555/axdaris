@@ -3,8 +3,9 @@ import pandas as pd
 from app.config import Config
 
 class Database:
-    def __init__(self):
-        self.db_path = Config.DB_PATH
+    def __init__(self, db_path=None, csv_path=None):
+        self.db_path = db_path or Config.DB_PATH
+        self.csv_path = csv_path or Config.OUTPUT_CSV_PATH
         self.init_db()
 
     def get_connection(self):
@@ -78,9 +79,16 @@ class Database:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM leads WHERE status = 'new'")
             return [dict(row) for row in cursor.fetchall()]
+
+    def get_all_leads(self):
+        with self.get_connection() as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM leads ORDER BY id DESC")
+            return [dict(row) for row in cursor.fetchall()]
             
     def export_to_csv(self):
         with self.get_connection() as conn:
             df = pd.read_sql_query("SELECT * FROM leads", conn)
-            df.to_csv(Config.OUTPUT_CSV_PATH, index=False, encoding='utf-8')
-            return Config.OUTPUT_CSV_PATH
+            df.to_csv(self.csv_path, index=False, encoding='utf-8')
+            return self.csv_path
