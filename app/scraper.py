@@ -3,6 +3,53 @@ import re
 import google.generativeai as genai
 from app.config import Config
 
+_FENCE_RE = re.compile(r"```(?:json)?\s*(.*?)```", re.DOTALL | re.IGNORECASE)
+
+
+def parse_leads_json(text):
+    """Extract a list of lead dicts from a Gemini response.
+
+    The model is asked for a raw JSON array but often wraps it in a code
+    fence, adds a sentence before/after it, or returns an object such as
+    {"leads": [...]}. Raises ValueError if no list of leads can be found.
+    """
+    if not text or not text.strip():
+        raise ValueError("empty response from model")
+
+    candidates = [m.strip() for m in _FENCE_RE.findall(text)]
+    candidates.append(text.strip())
+
+    decoder = json.JSONDecoder()
+    for candidate in candidates:
+        # Try every position where a JSON array/object could start, so any
+        # leading prose ("Here are the accounts:") is skipped.
+        for start, ch in enumerate(candidate):
+            if ch not in "[{":
+                continue
+            try:
+                data, _ = decoder.raw_decode(candidate, start)
+            except json.JSONDecodeError:
+                continue
+            leads = _as_lead_list(data)
+            if leads is not None:
+                return leads
+    raise ValueError("no JSON list of leads found in model response")
+
+
+def _as_lead_list(data):
+    if isinstance(data, dict):
+        for key in ("leads", "results", "accounts", "businesses", "data"):
+            if isinstance(data.get(key), list):
+                data = data[key]
+                break
+        else:
+            return [data] if "profile_url" in data else None
+    if isinstance(data, list):
+        leads = [item for item in data if isinstance(item, dict)]
+        return leads if leads or not data else None
+    return None
+
+
 class Scraper:
     def __init__(self, use_mock=False):
         self.use_mock = use_mock
@@ -42,17 +89,7 @@ class Scraper:
 
         try:
             response = self.model.generate_content(prompt)
-            text = response.text.strip()
-            
-            # Clean up markdown formatting if the model still adds it
-            if text.startswith("```json"):
-                text = text[7:]
-            if text.startswith("```"):
-                text = text[3:]
-            if text.endswith("```"):
-                text = text[:-3]
-                
-            leads = json.loads(text.strip())
+            leads = parse_leads_json(response.text)
             return self._deduplicate(leads)
         except Exception as e:
             print(f"Error fetching real leads from AI Scraper: {e}")
